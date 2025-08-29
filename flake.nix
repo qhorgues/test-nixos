@@ -25,13 +25,18 @@
           inherit system;
         };
       });
-      packages = forAllSystems (system:
-        import nixpkgs { inherit system; }
-      );
+      # C’est ici qu’on expose un nixosSystem prêt à l’emploi
+      nixosSystem = args:
+        nixpkgs.lib.nixosSystem (
+          args // {
+            # injecter nixpkgs distant
+            specialArgs = (args.specialArgs or {}) // {
+              pkgs = import nixpkgs { system = args.system; };
+              pkgs-unstable = import nixpkgs-unstable { system = args.system; };
+            };
+          }
+        );
 
       lib = nixpkgs.lib;
-      nixosModules = {
-        full = import "${nixpkgs}/nixos" { };
-      };
     };
 }
