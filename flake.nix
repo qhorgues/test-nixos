@@ -26,16 +26,18 @@
         };
       });
       # C’est ici qu’on expose un nixosSystem prêt à l’emploi
-      nixosSystem = args:
-        nixpkgs.lib.nixosSystem (
-          args // {
-            # injecter nixpkgs distant
-            specialArgs = (args.specialArgs or {}) // {
-              pkgs = import nixpkgs { system = args.system; };
-              pkgs-unstable = import nixpkgs-unstable { system = args.system; };
-            };
-          }
-        );
+      nixosSystem = { system, modules ? [], specialArgs ? {} }:
+        let
+          baseModules = import "${nixpkgs}/nixos/modules/module-list.nix";
+        in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = baseModules ++ modules;
+          specialArgs = specialArgs // {
+            pkgs = import nixpkgs { inherit system; };
+            pkgs-unstable = import nixpkgs-unstable { inherit system; };
+          };
+        };
 
       lib = nixpkgs.lib;
     };
