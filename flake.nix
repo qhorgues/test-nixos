@@ -25,5 +25,10 @@
           inherit system;
         };
       });
+      packages = forAllSystems (system:
+        import nixpkgs { inherit system; }
+      );
+
+      lib = nixpkgs.lib;
     };
 }
