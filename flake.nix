@@ -30,5 +30,6 @@
       );
 
       lib = nixpkgs.lib;
+      nixosModules = nixpkgs.nixosModules;
     };
 }
