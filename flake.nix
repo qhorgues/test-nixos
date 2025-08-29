@@ -30,6 +30,8 @@
       );
 
       lib = nixpkgs.lib;
-      nixosModules = nixpkgs.nixosModules;
+      nixosModules = {
+        full = import "${nixpkgs}/nixos" { };
+      };
     };
 }
